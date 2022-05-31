@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#  Install ROS2 base on the system
+#  Install ROS2 base on the Ubuntu system
 #  Maintainer: Wei-chih, Lin
 #  Email: weichih.lin@protonmail.com
 #  Version: 0.0.1
@@ -13,7 +13,7 @@
 #######################################
 
 HARDWARE_PLATFORM=$(uname -i)
-SYSTEM=&(cat /etc/issue | cut -b 8-12 | tr -d '\n')
+SYSTEM=$(cat /etc/issue | cut -b 8-12 | tr -d '\n')
 
 #######################################
 # Update repository
@@ -73,21 +73,28 @@ function setup_source(){
 #######################################
 function install_ros2(){
     version=""
-    case "${1}" in
-        "20.04")
-            version=foxy
+    system=$1
+    case "$system" in
+        20.04) version=foxy
             ;;
-        "22.04")
-            version=humble
+        22.04) version=humble
             ;;
-        *)
-            echo "Unexpected system! Please checkout your system!\n"
+        *)  echo "Unexpected system! Please checkout your system!"
             exit 1
             ;; 
     esac
     sudo apt install -y ros-$version-desktop
-    echo "--------------------"
-    echo "Successfully install ROS2-$version-desktop!\n"
+    if [ -d /opt/ros/$version ]; then
+        echo "--------------------"
+        echo "Successfully install ROS2-$version-desktop!"
+        echo "Please check the website to get more information: https://docs.ros.org/en/humble/index.html"
+        echo ""
+    else
+        echo "Failed to install ROS2-$version! Please checkout your system!"
+        echo ""
+        exit 1
+    fi
+
 }
 
 #######################################
@@ -98,16 +105,17 @@ function install_ros2(){
 #   None
 #######################################
 function environment_setup(){
-    source /opt/ros/humble/setup.bash
+    echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+    source ~/.bashrc
 }
 
 # Main function
 function main(){
-    #setup_locale
-    #setup_source
-    #update_repository
-    #install_ros2 $SYSTEM
-    #environment_setup
+    setup_locale
+    setup_source
+    update_repository
+    install_ros2 $SYSTEM
+    environment_setup
     exit 0
 }
 
