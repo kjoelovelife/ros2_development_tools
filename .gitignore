@@ -25,6 +25,9 @@ devel_isolated/
 *.dox
 *.wikidoc
 
+# Ignore software package
+*.deb
+
 # eclipse stuff
 .project
 .cproject
