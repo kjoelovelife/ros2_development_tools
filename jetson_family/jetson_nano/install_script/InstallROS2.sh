@@ -78,6 +78,7 @@ build_basic_bsp_example(){
     cd $2 && . setup-env \
         --machine jetson-nano-devkit \
         --distro tegrademo build 
+    sudo sysctl -n -w fs.inotify.max_user_watches=16384 # Increase the maximum number or watches:
     bitbake demo-image-full  # get the basic demo image building
 
 }
