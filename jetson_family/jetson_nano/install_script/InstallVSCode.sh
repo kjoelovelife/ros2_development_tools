@@ -49,7 +49,7 @@ function vscode_install(){
 function main(){
      apt_update
      vscode_install latest
-     exit 1
+     exit 0
 }
 
 # ToDo(): Start the progression 
