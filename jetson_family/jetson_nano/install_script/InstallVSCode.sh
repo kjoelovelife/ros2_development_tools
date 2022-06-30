@@ -10,7 +10,7 @@
 # Arguments:
 #   None
 #######################################
-function apt_update(){
+apt_update(){
      sudo apt update --fix-missing
      sudo apt upgrade
 }
@@ -24,7 +24,7 @@ function apt_update(){
 # Output: 
 #   Install status
 #######################################
-function vscode_install(){
+vscode_install(){
      VERSION=$1
      wget -N -O vscode-linux-deb.arm64.deb https://update.code.visualstudio.com/$VERSION/linux-deb-arm64/stable
      sudo apt install ./vscode-linux-deb.arm64.deb
@@ -46,7 +46,7 @@ function vscode_install(){
 # Arguments:
 #   None
 #######################################
-function main(){
+main(){
      apt_update
      vscode_install latest
      exit 0
