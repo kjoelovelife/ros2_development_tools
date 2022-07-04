@@ -8,13 +8,14 @@
 #   https://github.com/jetsonhacks/installROS2/blob/master/installROS2.sh
 
 ROS_DISTRO=foxy
-BUILD_ROOT=/opt/ros/$ROS_DISTRO_src
+BUILD_ROOT=/opt/ros/${ROS_DISTRO}_src
 INSTALL_ROOT=/opt/ros/$ROS_DISTRO
 
 
 
 #######################################
 # Update cmake version from 3.10.2 to 3.20.0
+# Reference: https://gist.github.com/bmegli/4049b7394f9cfa016c24ed67e5041930
 # Globals:
 #   None
 # Arguments:
@@ -30,7 +31,7 @@ update_cmake(){
     hash -r
     apt-cache policy cmake
     rm $1/cmake-3.20.0.tar.gz
-
+    sudo ln -s $(which cmake) /usr/bin/cmake
 }
 
 #######################################
@@ -74,7 +75,7 @@ add_ros2_apt_repository(){
 #   BUILD_ROOT
 #   ROS_DISTRO
 # Arguments:
-#   install_path
+#   None
 #######################################
 install_development_tools(){
     sudo apt update
@@ -126,8 +127,8 @@ install_development_tools(){
         libcunit1-dev
 
     # compile yaml-cpp-0.6, which some ROS packages may use (but is not in the 18.04 apt repo)
-    git clone --branch yaml-cpp-0.6.0 https://github.com/jbeder/yaml-cpp $1/yaml-cpp-0.6 && \
-    cd $1/yaml-cpp-0.6 && \
+    git clone --branch yaml-cpp-0.6.0 https://github.com/jbeder/yaml-cpp $HOME/src/yaml-cpp-0.6 && \
+    cd $HOME/src/yaml-cpp-0.6 && \
     mkdir build && \
     cd build && \
     cmake -DBUILD_SHARED_LIBS=ON .. && \
@@ -147,15 +148,16 @@ install_development_tools(){
 #######################################
 get_ros2_code(){
     sudo mkdir -p $BUILD_ROOT/src && cd $BUILD_ROOT
-    sudo sh -c "rosinstall_generator --deps --rosdistro $ROS_DISTRO $1 launch_xml launch_yaml example_interfaces > ros2.$ROS_DISTRO.$1.rosinstall"
+    sudo sh -c "rosinstall_generator --deps --rosdistro $ROS_DISTRO \
+        $1 launch_xml launch_yaml example_interfaces turtlesim > ros2.$ROS_DISTRO.$1.rosinstall"
     sudo sh -c "vcs import src < ros2.$ROS_DISTRO.$1.rosinstall"
 
     # download unreleased packages     
-    sudo sh -c "git clone --branch ros2 https://github.com/Kukanani/vision_msgs ${BUILD_ROOT}/src/vision_msgs && \
-    git clone --branch ${ROS_DISTRO} https://github.com/ros2/demos demos && \
-    cp -r demos/demo_nodes_cpp ${BUILD_ROOT}/src && \
-    cp -r demos/demo_nodes_py ${BUILD_ROOT}/src && \
-    rm -r -f demos"
+    sudo sh -c "git clone --branch ros2 https://github.com/Kukanani/vision_msgs ${BUILD_ROOT}/src/vision_msgs"
+
+    # modified rules in all setup.cfg
+    sudo sed -i "s:script\-dir:script_dir:g" -i "s:install\-scripts:install_scripts:g" $(find /opt/ros/src -iname "setup.cfg" -type f)
+
 
 }
 
@@ -171,8 +173,10 @@ rosdep_install(){
     cd $BUILD_ROOT
     sudo rosdep init
     rosdep update
-    rosdep install --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y --skip-keys "console_bridge fastcdr fastrtps rti-connext-dds-5.3.1 urdfdom_headers qt_gui"
+    rosdep install --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y --skip-keys \
+        "console_bridge fastcdr fastrtps rti-connext-dds-5.3.1 urdfdom_headers"
     sudo rm -rf /var/lib/apt/lists/*
+
 }
 
 
@@ -201,11 +205,11 @@ build_ros2(){
 #   None
 #######################################
 main(){
-    update_cmake "/home/$USER/src"
+    update_cmake "$HOME/src"
     set_locale
     add_ros2_apt_repository
-    install_development_tools "/home/$USER/src"
-    get_ros2_code "ros_base"
+    install_development_tools "$HOME/src"
+    get_ros2_code "desktop"
     rosdep_install
     build_ros2
     exit 0
