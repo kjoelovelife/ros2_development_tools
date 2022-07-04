@@ -9,7 +9,7 @@
 
 ROS_DISTRO=foxy
 BUILD_ROOT=/opt/ros/${ROS_DISTRO}_src
-INSTALL_ROOT=/opt/ros/$ROS_DISTRO
+INSTALL_ROOT=/opt/ros/${ROS_DISTRO}
 
 
 
@@ -127,8 +127,8 @@ install_development_tools(){
         libcunit1-dev
 
     # compile yaml-cpp-0.6, which some ROS packages may use (but is not in the 18.04 apt repo)
-    git clone --branch yaml-cpp-0.6.0 https://github.com/jbeder/yaml-cpp $HOME/src/yaml-cpp-0.6 && \
-    cd $HOME/src/yaml-cpp-0.6 && \
+    git clone --branch yaml-cpp-0.6.0 https://github.com/jbeder/yaml-cpp ${HOME}/src/yaml-cpp-0.6 && \
+    cd ${HOME}/src/yaml-cpp-0.6 && \
     mkdir build && \
     cd build && \
     cmake -DBUILD_SHARED_LIBS=ON .. && \
@@ -147,18 +147,16 @@ install_development_tools(){
 #   ros_pkg # Please check: https://index.ros.org/packages/
 #######################################
 get_ros2_code(){
-    sudo mkdir -p $BUILD_ROOT/src && cd $BUILD_ROOT
-    sudo sh -c "rosinstall_generator --deps --rosdistro $ROS_DISTRO \
-        $1 launch_xml launch_yaml example_interfaces turtlesim > ros2.$ROS_DISTRO.$1.rosinstall"
-    sudo sh -c "vcs import src < ros2.$ROS_DISTRO.$1.rosinstall"
+    sudo mkdir -p ${BUILD_ROOT}/src && cd ${BUILD_ROOT}
+    sudo sh -c "rosinstall_generator --deps --rosdistro ${ROS_DISTRO} \
+        $1 launch_xml launch_yaml example_interfaces turtlesim > ros2.${ROS_DISTRO}.$1.rosinstall"
+    sudo sh -c "vcs import src < ros2.${ROS_DISTRO}.$1.rosinstall"
 
     # download unreleased packages     
     sudo sh -c "git clone --branch ros2 https://github.com/Kukanani/vision_msgs ${BUILD_ROOT}/src/vision_msgs"
 
     # modified rules in all setup.cfg
-    sudo sed -i "s:script\-dir:script_dir:g" -i "s:install\-scripts:install_scripts:g" $(find /opt/ros/src -iname "setup.cfg" -type f)
-
-
+    sudo sed -i "s:script\-dir:script_dir:g" -i "s:install\-scripts:install_scripts:g" $(find ${BUILD_ROOT}/src -iname "setup.cfg" -type f)
 }
 
 #######################################
@@ -170,10 +168,10 @@ get_ros2_code(){
 #######################################
 rosdep_install(){
     sudo apt-get update
-    cd $BUILD_ROOT
+    cd ${BUILD_ROOT}
     sudo rosdep init
     rosdep update
-    rosdep install --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y --skip-keys \
+    rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --skip-keys \
         "console_bridge fastcdr fastrtps rti-connext-dds-5.3.1 urdfdom_headers"
     sudo rm -rf /var/lib/apt/lists/*
 
@@ -183,15 +181,15 @@ rosdep_install(){
 #######################################
 # Build ROS 2
 # Globals:
-#   BULD_ROOT
+#   INSTALL_ROOT
 # Arguments:
 #   ros_distro
 #######################################
 build_ros2(){
-    sudo mkdir -p $INSTALL_ROOT
-    sudo colcon build --merge-install --install-base $INSTALL_ROOT
-    sudo colcon build --merge-install --install-base $INSTALL_ROOT
-    echo "source $INSTALL_ROOT/setup.bash" >> ~/.bashrc 
+    sudo mkdir -p ${INSTALL_ROOT}
+    sudo colcon build --merge-install --install-base ${INSTALL_ROOT}
+    sudo colcon build --merge-install --install-base ${INSTALL_ROOT}
+    echo "source ${INSTALL_ROOT}/setup.bash" >> ~/.bashrc 
     echo "source /usr/share/colcon_cd/function/colcon_cd.sh" >> ~/.bashrc
     #echo "export _colcon_cd_root=~/ros2_install" >> ~/.bashrc
 }
@@ -205,10 +203,10 @@ build_ros2(){
 #   None
 #######################################
 main(){
-    update_cmake "$HOME/src"
+    update_cmake "${HOME}/src"
     set_locale
     add_ros2_apt_repository
-    install_development_tools "$HOME/src"
+    install_development_tools "${HOME}/src"
     get_ros2_code "desktop"
     rosdep_install
     build_ros2
