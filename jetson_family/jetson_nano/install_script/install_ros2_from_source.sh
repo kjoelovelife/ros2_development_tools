@@ -155,8 +155,11 @@ get_ros2_code(){
     # download unreleased packages     
     sudo sh -c "git clone --branch ros2 https://github.com/Kukanani/vision_msgs ${BUILD_ROOT}/src/vision_msgs"
 
+    # remove duplicate package 
+    sudo rm -rf ${BUILD_ROOT}/src/demos
+
     # modified rules in all setup.cfg
-    sudo sed -i "s:script\-dir:script_dir:g" -i "s:install\-scripts:install_scripts:g" $(find ${BUILD_ROOT}/src -iname "setup.cfg" -type f)
+    sudo sed -i "s:script\-dir:script_dir:g;s:install\-scripts:install_scripts:g" $(find ${BUILD_ROOT}/src -iname "setup.cfg" -type f)
 }
 
 #######################################
