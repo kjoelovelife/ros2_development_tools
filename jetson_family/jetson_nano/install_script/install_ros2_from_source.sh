@@ -80,6 +80,7 @@ add_ros2_apt_repository(){
 install_development_tools(){
     sudo apt update
     sudo apt-get install -y \
+                apt-utils \
 		build-essential \
 		cmake \
 		git \
@@ -109,7 +110,10 @@ install_development_tools(){
         flake8-quotes \
         pytest-repeat \
         pytest-rerunfailures \
-        pytest
+        pytest \
+        empy \
+        catkin_pkg \
+        lark
     
     # Because of the error "setuptools deprecation warning, setuptools need version 58.2.0"
     python3 -m pip uninstall -y setuptools
