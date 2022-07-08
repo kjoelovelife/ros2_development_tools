@@ -7,6 +7,9 @@
 # Mostly from: 
 #   https://github.com/jetsonhacks/installROS2/blob/master/installROS2.sh
 
+
+# Global Parameters
+UBUNTU_DISTRO=$(grep RELEASE /etc/lsb-release | awk -F '=' '{print $2}')
 ROS_DISTRO=foxy
 BUILD_ROOT=/opt/ros/${ROS_DISTRO}_src
 INSTALL_ROOT=/opt/ros/${ROS_DISTRO}
@@ -22,16 +25,24 @@ INSTALL_ROOT=/opt/ros/${ROS_DISTRO}
 #   install_path
 #######################################
 update_cmake(){
-    sudo apt install -y wget checkinstall
-    cd $1 && wget https://github.com/Kitware/CMake/releases/download/v3.20.0/cmake-3.20.0.tar.gz
-    tar -zvxf cmake-3.20.0.tar.gz
-    cd $1/cmake-3.20.0 && ./bootstrap
-    make -j$(nproc)
-    sudo checkinstall --pkgname=cmake --pkgversion="3.20-custom" --default
-    hash -r
-    apt-cache policy cmake
-    rm $1/cmake-3.20.0.tar.gz
-    sudo ln -s $(which cmake) /usr/bin/cmake
+    cmake_version=$(apt-cache policy cmake | grep Installed | awk -F ':' '{print $2}' | awk -F '-' '{print $1}')
+    if [ "`echo "${cmake_version} < 3.20" | bc`" -eq 1 ] 
+    then
+        echo -e "\nUpgrade cmake version to 3.20"
+        sudo apt install -y wget checkinstall
+        cd $1 && wget https://github.com/Kitware/CMake/releases/download/v3.20.0/cmake-3.20.0.tar.gz
+        tar -zvxf cmake-3.20.0.tar.gz
+        cd $1/cmake-3.20.0 && ./bootstrap
+        make -j$(nproc)
+        sudo checkinstall --pkgname=cmake --pkgversion="3.20-custom" --default
+        hash -r
+        apt-cache policy cmake
+        rm $1/cmake-3.20.0.tar.gz
+        sudo ln -s $(which cmake) /usr/bin/cmake
+    else
+        echo -e "\nThe version of cmake >= 3.20. Skip to upgrade cmake.\n"
+    fi
+
 }
 
 #######################################
@@ -210,13 +221,18 @@ build_ros2(){
 #   None
 #######################################
 main(){
-    update_cmake "${HOME}/src"
-    set_locale
-    add_ros2_apt_repository
-    install_development_tools "${HOME}/src"
-    get_ros2_code "desktop"
-    rosdep_install
-    build_ros2
+    if[ "$UBUNTU_DISTRO" == "18.04" ]
+    then
+        update_cmake "${HOME}/src"
+        set_locale
+        add_ros2_apt_repository
+        install_development_tools "${HOME}/src"
+        get_ros2_code "desktop"
+        rosdep_install
+        build_ros2
+    else
+        echo -e "\nUbuntu distro >= 20.04, you can use the script \"install_ros2.sh\" to install ROS2." 
+    fi
     exit 0
 }
 
