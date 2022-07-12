@@ -1,4 +1,5 @@
 ros2_development_tools
 Copyright 2022, Wei-Chih Lin<weichih.lin@protonmail.com>
 
-Thsis project includes how to install dependencies fastly for specific platform such as RPi, Jetson Family and more.
+Thsis project includes how to install ROS, ROS2 and related dependencies quickly 
+for specific platform such as RPi, Jetson Family and more.
