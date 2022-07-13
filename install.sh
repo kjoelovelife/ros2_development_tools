@@ -47,6 +47,7 @@ check_installation(){
                                         ;;
 
                 -h | --help )           usage
+                                        echo ""
                                         exit
                                         ;;
 
