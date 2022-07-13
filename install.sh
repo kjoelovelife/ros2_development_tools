@@ -17,6 +17,8 @@ usage(){
     echo "Use the command: \`./install.sh [OPTION]\` "
     echo "  --recomputerj10-ros2 -> Install ROS2-Foxy in reComputer-J10xx series"
     echo "  --vscode             -> Just install VS-Code"
+    echo "  --ros1               -> Just install ROS"
+    echo "  --ros2               -> Just install ROS2"
     echo "  -a | --auto          -> Install all things for operating environment with ROS/ROS2"
     echo "  -h | --help          -> For help"
 
@@ -43,6 +45,12 @@ check_installation(){
                 --vscode             )  SPECIFICATION="normal/install_vscode.sh"
                                         ;;
 
+                --ros1               )  SPECIFICATION="normal/install_ros.sh"
+                                        ;;
+
+                --ros2               )  SPECIFICATION="normal/install_ros2.sh"
+                                        ;;
+                                        
                 -a | --auto )           AUTOMATED="y"
                                         ;;
 
