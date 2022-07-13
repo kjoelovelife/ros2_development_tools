@@ -14,7 +14,7 @@ SPECIFICATION=""
 #   AUTOMATED
 #######################################
 usage(){
-    echo "Use the command: .install.sh [OPTION] "
+    echo "Use the command: \`./install.sh [OPTION]\` "
     echo "  --recomputerj10-ros2 -> Install ROS2-Foxy in reComputer-J10xx series"
     echo "  --vscode             -> Just install VS-Code"
     echo "  -a | --auto          -> Install all things for operating environment with ROS/ROS2"
