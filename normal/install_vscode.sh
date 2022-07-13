@@ -77,11 +77,12 @@ vscode_install(){
      if [ -n $(which code) ]
      then
           code --install-extension ms-python.python \
-          --install-extension ms-vscode.cpptools \
-          --install-extension ms-vscode.cpptools-extension-pack \
-          --install-extension ms-vscode.cpptools-themes \
-          --install-extension fleexo.cpp-class-creator \
-          --force
+               --install-extension ms-vscode.cpptools \
+               --install-extension ms-vscode.cpptools-extension-pack \
+               --install-extension ms-vscode.cpptools-themes \
+               --install-extension fleexo.cpp-class-creator \
+               --install-extension ms-iot.vscode-ros \
+               --force
           echo "Install done!"
           echo "Also install these extension from Microsoft: Python, C/C++, C/C++ Extension Pack, C/C++ Themes"
      else
