@@ -13,6 +13,12 @@ This project is about setting operating environment for ROS/ROS2 on specific SBC
 | [reComputer-J1010](https://www.icshop.com.tw/product-page.php?28703)                                |   &#9745;   |
 | [Adlink I-Pi SMARC Kit](https://www.adlinktech.com/en/ipi-smarc-devkit-for-industrial-applications) |   &#9745;   |
 
+And now can install tools below:
+
+| Tools    | Content |
+| -------- | -------- |
+| Framwork | [ROS](http://wiki.ros.org/ROS/Installation), [ROS2](https://docs.ros.org/en/humble/Installation.html)|
+| [IDE](https://en.wikipedia.org/wiki/Integrated_development_environment)| [VSCode](https://code.visualstudio.com/)|
 
 ## Download this project
 
