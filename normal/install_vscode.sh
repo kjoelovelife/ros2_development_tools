@@ -102,7 +102,7 @@ vscode_install(){
 #######################################
 main(){
 
-     if [ -n $(which code) ] 
+     if [ -n "$(which code)" ] 
      then
           echo "VS Code: skip installing, because it already exist."
      else
