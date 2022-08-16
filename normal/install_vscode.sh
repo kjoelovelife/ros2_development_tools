@@ -42,8 +42,8 @@ install_with_ubuntu(){
      amd64 )  sudo apt install -y code          
               ;;
 
-     arm64 )  wget -N -O normal/vscode-linux-deb.arm64.deb https://update.code.visualstudio.com/$1/linux-deb-arm64/stable
-              sudo apt install normal/vscode-linux-deb.arm64.deb
+     arm64 )  wget -N -O $HOME/ros2_development_tools/normal/vscode-linux-deb.arm64.deb https://update.code.visualstudio.com/$1/linux-deb-arm64/stable
+              sudo apt install $HOME/ros2_development_tools/normal/vscode-linux-deb.arm64.deb
               ;;
 
      * )      echo "This project no support for structure $ARCHITECTURE witn Ubuntu."
