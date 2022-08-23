@@ -221,7 +221,7 @@ build_ros2(){
 #   None
 #######################################
 main(){
-    if[ "$UBUNTU_DISTRO" == "18.04" ]
+    if [ "$UBUNTU_DISTRO" == "18.04" ]
     then
         update_cmake "${HOME}/src"
         set_locale
